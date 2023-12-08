@@ -46,16 +46,16 @@ jobs:
 
     - name: Set up environment
       run: |
-        echo "DATE=$(Get-Date -Format 'yyyyMMddHH')" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+        echo "DATE=$(Get-Date -Format 'yyyyMMddHHmmss')" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
 
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        RELEASE_DATE: ${{ env:DATE }}
+        RELEASE_DATE: $env:DATE
       with:
-        tag_name: "Release-${{ env:RELEASE_DATE }}"
+        tag_name: "Release-${{ env.RELEASE_DATE }}"
         release_name: Release-${{ github.run_number }}
         body: "Release for commit ${{ github.sha }}"
 
