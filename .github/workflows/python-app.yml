@@ -55,9 +55,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.event.ref }}
-        release_name: Release ${{ github.event.ref }}
-        body: Release ${{ github.event.ref }}
+        tag_name: "Release-$(date +'%Y%m%d%H%M%S')"
+        release_name: Release-${{ github.run_number }}
+        body: Release for commit ${{ github.sha }}
 
     - name: Upload Release Asset (Portable)
       id: upload_release_asset_portable
