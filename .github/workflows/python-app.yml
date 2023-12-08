@@ -7,10 +7,9 @@ on:
   push:
     branches:
       - master
-
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest  # 使用 Windows 构建环境
 
     steps:
     - name: Checkout repository
@@ -20,51 +19,45 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.x
-
+        
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install pyinstaller
 
-    - name: Build exe (PyInstaller -D)
-      run: pyinstaller -D --console -n VideoCompressor ./vcmain/main.py -y
-      
     - name: Build exe (PyInstaller -F)
       run: pyinstaller -F --console -n VideoCompressor-Portable.exe ./vcmain/main.py -y
 
+    - name: Build exe (PyInstaller -D)
+      run: pyinstaller -D --console -n VideoCompressor ./vcmain/main.py -y
+      
     - name: Rename and Archive Portable artifacts
       run: |
-        zip -r dist/VideoCompressor.zip dist/VideoCompressor
-        rm -rf dist/VideoCompressor
-      shell: bash
-      
+        Compress-Archive -Path ./dist/VideoCompressor -DestinationPath ./dist/VideoCompressor.zip
+        Remove-Item -Recurse -Force ./dist/VideoCompressor
+      shell: powershell
+
     - name: Archive Portable artifacts
       uses: actions/upload-artifact@v2
       with:
         name: artifacts-portable
-        path: dist
+        path: ./dist
 
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    
-    steps:
     - name: Set up environment
       run: |
-        echo "DATE=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+        echo "DATE=$(Get-Date -Format 'yyyyMMddHH')" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
 
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        RELEASE_DATE: ${{ env.DATE }}
+        RELEASE_DATE: ${{ env:DATE }}
       with:
-        tag_name: "Release-${{ env.RELEASE_DATE }}"
+        tag_name: "Release-${{ env:RELEASE_DATE }}"
         release_name: Release-${{ github.run_number }}
-        body: Release for commit ${{ github.sha }}
-
+        body: "Release for commit ${{ github.sha }}"
 
     - name: Upload Release Asset (Portable)
       id: upload_release_asset_portable
@@ -73,7 +66,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: dist/VideoCompressor-Portable.exe
+        asset_path: ./dist/VideoCompressor-Portable.exe
         asset_name: VideoCompressor-Portable.exe
         asset_content_type: application/octet-stream
 
@@ -84,6 +77,5 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: dist/VideoCompressor.zip
+        asset_path: ./dist/VideoCompressor.zip
         asset_name: VideoCompressor.zip
-        asset_content_type: application/zip
