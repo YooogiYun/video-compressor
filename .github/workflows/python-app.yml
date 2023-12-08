@@ -1,3 +1,6 @@
+# Upload the VideoCompressorexe output from - F to the release package in the repository but the name is VideoCompressor-PortableexeAnd 
+# the VideoCompressor folder outputted by - D is uploaded to the release package in the repository with the name VideoCompressor.zip
+
 name: Build exe with PyInstaller and Release
 
 on:
@@ -26,29 +29,21 @@ jobs:
 
     - name: Build exe (PyInstaller -D)
       run: pyinstaller -D --console -n VideoCompressor ./vcmain/main.py -y
+      
+    - name: Build exe (PyInstaller -F)
+      run: pyinstaller -F --console -n VideoCompressor-Portable.exe ./vcmain/main.py -y
 
-    - name: Rename and Archive artifacts
+    - name: Rename and Archive Portable artifacts
       run: |
         zip -r dist/VideoCompressor.zip dist/VideoCompressor
+        rm -rf dist/VideoCompressor
       shell: bash
+      
     - name: Archive Portable artifacts
       uses: actions/upload-artifact@v2
       with:
         name: artifacts-portable
-        path: dist/VideoCompressor.zip
-
-    - name: Build exe (PyInstaller -F)
-      run: pyinstaller -F --console -n VideoCompressor.exe ./vcmain/main.py -y
-
-    - name: Rename and Archive artifacts
-      run: |
-        mv dist/VideoCompressor.exe dist/VideoCompressor-Portable.exe
-      shell: bash
-    - name: Archive Portable exe artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: artifacts-portable
-        path: dist/VideoCompressor-Portable.exe
+        path: dist
 
   release:
     needs: build
@@ -60,9 +55,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: Release ${{ github.ref }}
+        tag_name: ${{ github.event.ref }}
+        release_name: Release ${{ github.event.ref }}
+        body: Release ${{ github.event.ref }}
 
     - name: Upload Release Asset (Portable)
       id: upload_release_asset_portable
