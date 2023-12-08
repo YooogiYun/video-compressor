@@ -29,8 +29,7 @@ jobs:
 
     - name: Rename and Archive artifacts
       run: |
-        mv dist/VideoCompressor dist/VideoCompressor-Portable
-        zip -r dist/VideoCompressor.zip dist/VideoCompressor-Portable
+        zip -r dist/VideoCompressor.zip dist/VideoCompressor
       shell: bash
     - name: Archive Portable artifacts
       uses: actions/upload-artifact@v2
@@ -39,7 +38,7 @@ jobs:
         path: dist/VideoCompressor.zip
 
     - name: Build exe (PyInstaller -F)
-      run: pyinstaller -F --console -n VideoCompressor ./vcmain/main.py -y
+      run: pyinstaller -F --console -n VideoCompressor.exe ./vcmain/main.py -y
 
     - name: Rename and Archive artifacts
       run: |
