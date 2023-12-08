@@ -48,16 +48,23 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
+    
     steps:
+    - name: Set up environment
+      run: |
+        echo "DATE=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        RELEASE_DATE: ${{ env.DATE }}
       with:
-        tag_name: "Release-$(date +'%Y%m%d%H%M%S')"
+        tag_name: "Release-${{ env.RELEASE_DATE }}"
         release_name: Release-${{ github.run_number }}
         body: Release for commit ${{ github.sha }}
+
 
     - name: Upload Release Asset (Portable)
       id: upload_release_asset_portable
