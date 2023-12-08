@@ -55,7 +55,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         RELEASE_DATE: $env:DATE
       with:
-        tag_name: "VideoCompressor-$env:DATE"
+        tag_name: "VideoCompressor-${{ env.DATE }}"
         release_name: Release-${{ github.run_number }}
         body: "Release for commit ${{ github.sha }}"
 
