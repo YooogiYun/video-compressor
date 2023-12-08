@@ -46,7 +46,7 @@ jobs:
 
     - name: Set up environment
       run: |
-        echo "DATE=$(Get-Date -Format 'yyyyMMddHHmmss')" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+        echo "DATE=$(Get-Date -Format 'yyyyMMddHH')" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
 
     - name: Create Release
       id: create_release
@@ -55,7 +55,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         RELEASE_DATE: $env:DATE
       with:
-        tag_name: VideoCompressor-$env:DATE
+        tag_name: "VideoCompressor-$env:DATE"
         release_name: Release-${{ github.run_number }}
         body: "Release for commit ${{ github.sha }}"
 
