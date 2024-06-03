@@ -21,7 +21,7 @@
 
 ### Instruction
 
-![VideoCompressor](https://github.com/YuniqueUnic/video-compressor/assets/127641096/4f4c59dc-a974-4c0a-8eec-0265aad14d78)
+![VideoCompressor](https://github.com/YuniqueUnic/video-compressor/assets/127641096/c1593aa0-8a39-45e4-a69f-872454af852d)
 
 **For Multiple File Compression:**
 
