@@ -21,6 +21,8 @@
 
 ### Instruction
 
+![VideoCompressor](https://github.com/YuniqueUnic/video-compressor/assets/127641096/4f4c59dc-a974-4c0a-8eec-0265aad14d78)
+
 **For Multiple File Compression:**
 
 - Create a directory for the uncompressed files
